@@ -1,0 +1,307 @@
+//Loading image files 
+//Loading the sound files from the Data Library
+import processing.core.PImage;
+import processing.sound.*;
+
+PImage back;
+PImage img;
+
+SoundFile MainMenu;
+SoundFile Gnote;
+SoundFile Bflatnote;
+SoundFile Cnote;
+SoundFile Fnote;
+SoundFile Dnote;
+
+//Iniating the Start Screen
+final int stateStartScreen = 0;
+final int stateNormal = 1;
+
+int state = stateStartScreen;
+
+//Importing Fonts
+PFont font1;
+PFont font2;
+
+int FrameRate = 60;
+int in = 1;
+
+//Game Arrays and Objects
+int length = 1024;
+int width = 768;
+int[] SquareX=new int[5];
+int[] SquareY=new int[6];
+int MaxTime=20;
+
+//Boolean Logic
+boolean Mouse;
+boolean Start;
+boolean End;
+
+//Timer Arrays and things
+int Timer;
+int Score;
+int[] HighScores = new int[3];
+
+
+// -------------------------------------------------------------------------------
+void setup()
+{
+  //Basic Application Numbers
+  back = loadImage("background.jpg");
+  frameRate(FrameRate);
+  size(1024, 768);
+  background (0);
+  font1 = loadFont("HarlowSolid-60.vlw");
+  font2 = loadFont("HighTowerText-Reg-22.vlw");
+  Mouse=false;
+  Start=false;
+  End=false;
+  Timer=0;
+  Score=0;
+ 
+  //Intergers for the Boxes
+  for(int A=0;A<4;A++){
+    SquareX[A]=int(random(0,4));
+    SquareY[A]=A;
+  }
+  //Loading the Music Files
+ MainMenu = new SoundFile(this, "mainmenu.wav");
+ Cnote = new SoundFile(this, "cnote.wav");
+ Bflatnote = new SoundFile(this, "Bflatnote.wav");
+ Dnote = new SoundFile(this, "dnote.wav");
+ Fnote = new SoundFile(this, "fnote.wav");
+ Gnote = new SoundFile(this, "gnote.wav");
+ 
+ }
+ 
+ //Timer Setup
+ 
+// -------------------------------------------------------------------------------------
+void draw() {
+  image(back, 1024, 768);
+
+  switch (state) {
+  case stateStartScreen:
+    drawForStateStartScreen();
+    break;
+
+  case stateNormal:
+    drawForStateNormal();
+    break;
+
+  default:
+    println ("undefined state, error 39");
+    break;
+    }
+}
+//-------------------------------------------------------------------------------
+ void mousePressed(){
+  if(mouseButton==LEFT){
+    Mouse=true;
+  }
+  println ("x: "+mouseX+" y: "+mouseY);
+
+if (in==1) {
+
+if (mouseX>400 && mouseX<400+200 && mouseY>200 && mouseY<200+50) {
+  if (MainMenu.isPlaying()) {
+     MainMenu.pause();
+    } else {
+      MainMenu.stop();
+    }
+  switch (state) {
+  case stateStartScreen:
+  state=stateNormal;
+  break;
+  }
+ }
+ in=2;
+}
+
+if (mouseX>400 && mouseX<400+200 && mouseY>300 && mouseY<300+50) {
+
+in=3;
+
+}
+
+if (mouseX>400 && mouseX<400+200 && mouseY>400 && mouseY<400+50) {
+
+in=4;
+
+
+} else if (in==2) {
+
+} else if (in==3) {
+
+} else if (in==4) {
+
+in=1;
+}
+}
+ 
+ 
+ void drawForStateStartScreen() {
+   if (in==1) {
+     in=1;
+     length = 1024;
+     width = 768;
+     frameRate(FrameRate);
+     background(#9EB4D1);
+     textFont(font1);
+     textSize (55);
+     fill (255);
+     text ("KeyTune", 400, 100);
+     stroke (0);
+     fill (255);
+     rect (400, 200, 200, 50);
+     fill (255);
+     rect (400, 300, 200, 50);
+     fill(255);
+     rect(400, 400, 200, 50);
+     fill (#0C305D, 100);
+     textSize (20);
+     textFont(font2);
+     text ("PLAY", 470, 233);
+     fill(#0E2543,100);
+     textSize (20);
+     textFont(font2);
+     text ("CREDITS", 455, 433);
+     fill (#0C305D,100);
+     textFont(font2);
+     text ("HIGHSCORES", 440, 330);
+     textSize (20);
+   } else if (in==2) {
+     background (50);
+   } else if (in==3) {
+      background(135,206,250);
+      stroke (0);
+      fill (255);
+      rect (400, 200, 200, 50);
+      fill (255);
+      rect (400, 300, 200, 50);
+      fill(255);
+      rect(400, 400, 200, 50);
+      fill (0);
+      textSize (20);
+      for(int A=0; A<4; A++){
+      text ("1º xxx", 455, 233);
+      }
+      fill (0);
+      textSize (20);
+      for(int A=0; A<4; A++){
+      text ("2º Scores[A]", 455, 433);
+      }
+      fill (0);
+      textSize (20);
+      for(int A=0; A<4; A++){
+      text ("3º Scores[A]", 455, 330);
+      }
+    } else if (in==4) {
+      background (135,206,250);
+      textSize (20);
+      text ("- Made by Anh Nguyen, Heather Long, and Trenton Alley", 25, 100);
+      text ("- All Sounds files used fall under creative Commons.\n", 25, 130);
+  }
+}
+//----------------------------------------------
+ void drawForStateNormal() {
+    background(255);
+    length = 1024;
+    width = 768;
+   
+  if(Start==true&Timer<MaxTime*FrameRate){
+    int ms = millis()/1000;
+    println(ms);
+ 
+  fill(0);
+  Timer=MaxTime - ms;
+   if(Timer > 0){
+     if(Timer <= 10){
+     }
+  text("Timer: "+Timer, 500/2, 40);
+  textSize(35);
+ }
+    else {
+    Start=false;
+    End=true;
+    return;
+
+
+ }
+  }
+   
+//Game Logic
+ for(int B=0;B<5;B++){
+    fill(0,100);
+    rect(length/5*B, width-width/5, length/5, width/5);
+    fill(#89C6EA,100);
+    rect(length/5*round(SquareX[B]), width/5*SquareY[B], length/5, width/5);
+
+    if(B<6){
+      line(length/5*(B+1), 0, length/5*(B+1), width-width/5);
+      line(0, width/5*(B+1), length, width/5*(B+1));
+    }
+//Scoring System
+    if(Mouse==true&End==false){
+      if(mouseX>length/5*round(SquareX[3])&mouseX<length/5*(round(SquareX[3])+1)&mouseY>width-width/5&mouseY<width){
+        Score++;
+        SquareX[4]=SquareX[3];
+        SquareX[3]=SquareX[2];
+        SquareX[2]=SquareX[1];
+        SquareX[1]=SquareX[0];
+        SquareX[0]=int(random(0,5));
+        Start=true;
+          //Notes for each key
+          if (SquareX[0] == 0) {
+          Bflatnote.amp(.2);
+          Bflatnote.play();
+        } else if (SquareX[0] == 1) {
+          Cnote.amp(1);
+          Cnote.play();
+        } else if (SquareX[0] == 2) {
+          Dnote.amp(.5);
+          Dnote.play();
+        } else if (SquareX[0] == 3) {
+          Fnote.amp(.45);
+          Fnote.play();
+        } else if (SquareX[0] == 4) {
+          Gnote.amp(.5);
+          Gnote.play();
+        }
+       
+       Mouse = false;
+       }
+      }
+    }
+//GameOver Screen
+  if(End==true){
+     img = loadImage("end.jpg");
+    fill(0,255,0,100);
+    rect(0,0,length, width);
+    fill(0);
+    textSize((length*width)/15000);
+    textAlign(CENTER,CENTER);
+    text("End", length/2, width/4*1);
+    text("SCORE:"+round(Score), length/2, width/4*2);
+    text("PLAY AGAIN PRESS SPACE", length/2, width/4*3);
+    if(keyPressed){
+    if(key==' '){
+    
+  switch (state) {
+  case stateNormal:
+  state=stateStartScreen;
+  break;
+  }
+       image( back, 1024, 768);
+       in = 1;
+       MainMenu.play();
+      
+  }
+   
+  
+    }
+  }
+ }
+ 
+//-----------------------------------------------------------------------
